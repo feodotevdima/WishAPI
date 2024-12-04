@@ -1,4 +1,5 @@
-﻿using Core;
+﻿using Application.interfases;
+using Core;
 using Microsoft.EntityFrameworkCore;
 using Presistence;
 using System;
@@ -9,9 +10,9 @@ using System.Threading.Tasks;
 
 namespace Application
 {
-    public class WishRepository
+    public class WishRepository : IWishRepository
     {
-        public async Task<c> AddUserAsync(WishModel wish)
+        public async Task<WishModel?> AddWishAsync(WishModel wish)
         {
             if (wish == null) return null;
             using (WishContext db = new WishContext())
@@ -22,7 +23,7 @@ namespace Application
             return wish;
         }
 
-        public async Task<WishModel> RemoveWishAsync(Guid id)
+        public async Task<WishModel?> RemoveWishAsync(Guid id)
         {
             var wish = await GetWishByIdAsync(id);
             if (wish == null) return null;
@@ -34,7 +35,7 @@ namespace Application
             return wish;
         }
 
-        public async Task<WishModel> UpdateUserAsync(WishModel wish)
+        public async Task<WishModel?> UpdateWishAsync(WishModel wish)
         {
             if (wish == null) return null;
             using (WishContext db = new WishContext())
@@ -61,7 +62,7 @@ namespace Application
             return wish;
         }
 
-        public async Task<WishModel?> GetWishByEmailAsync(Guid userId)
+        public async Task<WishModel?> GetWishByUserIdAsync(Guid userId)
         {
             List<WishModel> wishs = await GetWishsAsync();
             var wish = wishs.FirstOrDefault(item => item.UserId == userId);

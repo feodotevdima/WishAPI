@@ -1,11 +1,15 @@
+using Application;
+using Application.interfases;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddHttpClient();
+
+builder.Services.AddTransient<IWishRepository, WishRepository>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme);
+builder.Services.AddAuthorization();
 
 builder.Services.AddControllers();
 
@@ -26,6 +30,8 @@ builder.Services.AddCors(options =>
 var app = builder.Build();
 
 app.UseAuthentication();
+app.UseAuthorization();
+
 app.UseCors();
 
 if (app.Environment.IsDevelopment())
@@ -35,8 +41,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
-app.UseAuthorization();
 
 app.MapControllers();
 
