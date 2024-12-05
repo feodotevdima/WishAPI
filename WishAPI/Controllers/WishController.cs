@@ -33,9 +33,14 @@ namespace WishAPI.Controllers
         [HttpPost]
         public async Task<IResult> AddWishAsync([FromBody] List<WishList> wishList)
         {
-            var token = Request.Headers["Authorization"];
-            var wish = await _wishService.CreateNewWishAsync(new CreateWish(token, wishList));
-            if (wish == null) return Results.BadRequest();
+            var token = Request.Headers["Authorization"].ToString();
+            token = token.Substring(7);
+            var userIdStr = _wishService.getUserIdFromToken(token);
+            Console.WriteLine(token);
+            Console.WriteLine(userIdStr);
+            //var wish = await _wishService.CreateNewWishAsync(new CreateWish(token, wishList));
+            //if (wish == null) return Results.BadRequest();
+            var wish = 21123;
             return Results.Json(wish);
         }
 
@@ -44,7 +49,8 @@ namespace WishAPI.Controllers
         [HttpPut]
         public async Task<IResult> UpdateWishAsync([FromBody] List<WishList> wishList)
         {
-            var token = Request.Headers["Authorization"];
+            var token = Request.Headers["Authorization"].ToString();
+            token = token.Substring(7);
             var userIdStr = _wishService.getUserIdFromToken(token);
             Guid.TryParse(userIdStr, out var userId);
             var oldWish = await _wishRepository.GetWishByUserIdAsync(userId);
@@ -72,7 +78,8 @@ namespace WishAPI.Controllers
         [HttpDelete]
         public async Task<IResult> RemoveWishAsync()
         {
-            var token = Request.Headers["Authorization"];
+            var token = Request.Headers["Authorization"].ToString();
+            token = token.Substring(7);
             var userIdStr = _wishService.getUserIdFromToken(token);
             Guid.TryParse(userIdStr, out var userId);
             var wish = await _wishRepository.RemoveWishAsync(userId);
