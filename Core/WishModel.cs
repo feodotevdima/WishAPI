@@ -5,13 +5,17 @@
         public Guid Id { get; set; }
         public Guid UserId { get; set; }
         public string UserName { get; set; }
-        public WishList Presents { get; set; }
+        public string Present { get; set; }
+        public string Price { get; set; }
 
-        public WishModel(Guid userId, string userName, WishList presents)
+        public WishModel(Guid userId, string userName, string present, string price)
         {
             UserId = userId;
             UserName = userName;
-            Presents = presents;
+            Present = present;
+            Price = price;
         }
+
+        public WishModel() { }
     }
 }

@@ -14,6 +14,6 @@ namespace Application.interfases
         public Task<WishModel?> UpdateWishAsync(WishModel wish);
         public Task<List<WishModel>> GetWishsAsync();
         public Task<WishModel?> GetWishByIdAsync(Guid id);
-        public Task<WishModel?> GetWishByUserIdAsync(Guid userId);
+        public Task<List<WishModel>> GetWishByUserIdAsync(Guid userId);
     }
 }

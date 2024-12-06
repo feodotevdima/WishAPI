@@ -1,6 +1,5 @@
 ﻿using Core;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
 
 namespace Presistence
 {

@@ -62,10 +62,10 @@ namespace Application
             return wish;
         }
 
-        public async Task<WishModel?> GetWishByUserIdAsync(Guid userId)
+        public async Task<List<WishModel>> GetWishByUserIdAsync(Guid userId)
         {
             List<WishModel> wishs = await GetWishsAsync();
-            var wish = wishs.FirstOrDefault(item => item.UserId == userId);
+            var wish = wishs.Where(item => item.UserId == userId).ToList();
             return wish;
         }
     }

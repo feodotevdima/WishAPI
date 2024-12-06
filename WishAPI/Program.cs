@@ -1,10 +1,14 @@
 using Application;
 using Application.interfases;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using Presistence;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddDbContext<WishContext>();
 
 builder.Services.AddHttpClient();
 

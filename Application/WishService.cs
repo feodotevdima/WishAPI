@@ -21,18 +21,14 @@ namespace Application
         {
             var userIdStr = getUserIdFromToken(token);
             Guid.TryParse(userIdStr, out var userId);
-            //var existWish = await _wishRepository.GetWishByUserIdAsync(userId);
-
-            //if ((existWish != null))
-            //    await _wishRepository.RemoveWishAsync(existWish.Id);
 
             var response = await _httpClient.GetAsync($"https://localhost:7001/User/id/{userId}");
             if (!response.IsSuccessStatusCode) 
                 return null;
-            
+
             var user = await response.Content.ReadFromJsonAsync<UserModel>();
-            
-            WishModel wish = new WishModel(user.Id, user.Name, wishList);
+
+            WishModel wish = new WishModel(user.Id, user.Name, wishList.Present, wishList.Price);
             await _wishRepository.AddWishAsync(wish);
             return wish;
         }
