@@ -5,7 +5,7 @@ namespace Application.interfases
 {
     public interface IWishService
     {
-        public Task<WishModel> CreateNewWishAsync(CreateWish reqest);
+        public Task<WishModel> CreateNewWishAsync(string token, WishList wishList);
         public string? getUserIdFromToken(string token);
     }
 }

@@ -31,23 +31,22 @@ namespace WishAPI.Controllers
 
         [Authorize]
         [HttpPost]
-        public async Task<IResult> AddWishAsync([FromBody] List<WishList> wishList)
+        public async Task<IResult> AddWishAsync([FromBody] WishList wishList)
         {
             var token = Request.Headers["Authorization"].ToString();
             token = token.Substring(7);
             var userIdStr = _wishService.getUserIdFromToken(token);
             Console.WriteLine(token);
             Console.WriteLine(userIdStr);
-            //var wish = await _wishService.CreateNewWishAsync(new CreateWish(token, wishList));
-            //if (wish == null) return Results.BadRequest();
-            var wish = 21123;
+            var wish = await _wishService.CreateNewWishAsync(token, wishList);
+            if (wish == null) return Results.BadRequest();
             return Results.Json(wish);
         }
 
         [Route("update/wish")]
         [Authorize]
         [HttpPut]
-        public async Task<IResult> UpdateWishAsync([FromBody] List<WishList> wishList)
+        public async Task<IResult> UpdateWishAsync([FromBody] WishList wishList)
         {
             var token = Request.Headers["Authorization"].ToString();
             token = token.Substring(7);

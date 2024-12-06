@@ -2,10 +2,10 @@
 {
     public class WishList
     {
-        public string Present { get; set; }
-        public int Price { get; set; }
+        public List<string> Present { get; set; }
+        public List<int> Price { get; set; }
 
-        public WishList(string present, int price)
+        public WishList(List<string> present, List<int> price)
         {
             Present = present;
             Price = price;

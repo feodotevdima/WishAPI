@@ -17,14 +17,14 @@ namespace Application
             _httpClient = httpClient;
         }
 
-        public async Task<WishModel> CreateNewWishAsync(CreateWish reqest)
+        public async Task<WishModel> CreateNewWishAsync(string token, WishList wishList)
         {
-            var userIdStr = getUserIdFromToken(reqest.Token);
+            var userIdStr = getUserIdFromToken(token);
             Guid.TryParse(userIdStr, out var userId);
-            var existWish = await _wishRepository.GetWishByUserIdAsync(userId);
+            //var existWish = await _wishRepository.GetWishByUserIdAsync(userId);
 
-            if ((existWish != null))
-                await _wishRepository.RemoveWishAsync(existWish.Id);
+            //if ((existWish != null))
+            //    await _wishRepository.RemoveWishAsync(existWish.Id);
 
             var response = await _httpClient.GetAsync($"https://localhost:7001/User/id/{userId}");
             if (!response.IsSuccessStatusCode) 
@@ -32,7 +32,7 @@ namespace Application
             
             var user = await response.Content.ReadFromJsonAsync<UserModel>();
             
-            WishModel wish = new WishModel(user.Id, user.Name, reqest.Presents);
+            WishModel wish = new WishModel(user.Id, user.Name, wishList);
             await _wishRepository.AddWishAsync(wish);
             return wish;
         }
