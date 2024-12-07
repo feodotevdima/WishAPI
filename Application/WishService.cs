@@ -17,9 +17,9 @@ namespace Application
             _httpClient = httpClient;
         }
 
-        public async Task<WishModel> CreateNewWishAsync(string token, WishList wishList)
+        public async Task<WishModel> CreateNewWishAsync(string token, string present, string price)
         {
-            var userIdStr = getUserIdFromToken(token);
+            var userIdStr = GetUserIdFromToken(token);
             Guid.TryParse(userIdStr, out var userId);
 
             var response = await _httpClient.GetAsync($"https://localhost:7001/User/id/{userId}");
@@ -28,12 +28,12 @@ namespace Application
 
             var user = await response.Content.ReadFromJsonAsync<UserModel>();
 
-            WishModel wish = new WishModel(user.Id, user.Name, wishList.Present, wishList.Price);
+            WishModel wish = new WishModel(user.Id, user.Name, present, price);
             await _wishRepository.AddWishAsync(wish);
             return wish;
         }
 
-        public string? getUserIdFromToken(string token)
+        public string? GetUserIdFromToken(string token)
         {
             var handler = new JwtSecurityTokenHandler();
             if (handler.CanReadToken(token))
