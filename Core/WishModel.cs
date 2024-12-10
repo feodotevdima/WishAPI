@@ -7,6 +7,16 @@
         public string UserName { get; set; }
         public string Present { get; set; }
         public string Price { get; set; }
+        public Guid? ReservUser { get; set; }
+
+        public WishModel(Guid userId, string userName, string present, string price, Guid? reservUser)
+        {
+            UserId = userId;
+            UserName = userName;
+            Present = present;
+            Price = price;
+            ReservUser = reservUser;
+        }
 
         public WishModel(Guid userId, string userName, string present, string price)
         {
@@ -15,7 +25,5 @@
             Present = present;
             Price = price;
         }
-
-        public WishModel() { }
     }
 }

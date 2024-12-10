@@ -45,5 +45,26 @@ namespace Application
             }
             return null;
         }
+
+        public List<WishModel> GetWishsWisoutReserv(List<WishModel> wishs)
+        {
+            return wishs.Where(item => item.ReservUser == null).ToList();
+        }
+
+        public async Task<List<List<WishModel>>> GetListWishsAsync()
+        {
+            var wishs = await _wishRepository.GetWishsAsync();
+            var UsersId = new List<Guid>();
+            foreach (var wish in wishs)
+                UsersId.Add(wish.UserId);
+
+            var users = UsersId.Distinct().ToList();
+            var ListWishs = new List<List<WishModel>>();
+            foreach(var user in users)
+            {
+                ListWishs.Add(await _wishRepository.GetWishByUserIdAsync(user));
+            }
+            return ListWishs;
+        }
     }
 }
