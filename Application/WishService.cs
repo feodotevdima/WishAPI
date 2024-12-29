@@ -2,7 +2,9 @@
 using Core;
 using Presistence;
 using System.IdentityModel.Tokens.Jwt;
+using System.Net.Http;
 using System.Net.Http.Json;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Application
 {
@@ -44,6 +46,17 @@ namespace Application
                 return userId;
             }
             return null;
+        }
+        public async Task<string?> GetUserById(string id)
+        {
+            using HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, $"https://localhost:7001/User/id/{id}");
+
+            using HttpResponseMessage response = await _httpClient.SendAsync(request);
+            string content = await response.Content.ReadAsStringAsync();
+            string text = content.Split(new char[] { ',' })[1].Split(new char[] { ':' })[1];
+            string name= text.Substring(1, text.Length - 2);
+            Console.WriteLine(name);
+            return name;
         }
 
         public List<WishModel> GetWishsWisoutReserv(List<WishModel> wishs)

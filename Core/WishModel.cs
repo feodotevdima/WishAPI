@@ -8,14 +8,16 @@
         public string Present { get; set; }
         public string Price { get; set; }
         public Guid? ReservUser { get; set; }
+        public string? ReservUserName { get; set; }
 
-        public WishModel(Guid userId, string userName, string present, string price, Guid? reservUser)
+        public WishModel(Guid userId, string userName, string present, string price, Guid? reservUser, string? reservUserName)
         {
             UserId = userId;
             UserName = userName;
             Present = present;
             Price = price;
             ReservUser = reservUser;
+            ReservUserName = reservUserName;
         }
 
         public WishModel(Guid userId, string userName, string present, string price)

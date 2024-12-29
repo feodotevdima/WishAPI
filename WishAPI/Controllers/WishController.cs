@@ -23,14 +23,12 @@ namespace WishAPI.Controllers
         [HttpGet]
         public async Task<IResult> GetAllWishsAsync()
         {
-            //var wishs = await _wishRepository.GetWishsAsync();
             var wishs = await _wishService.GetListWishsAsync();
             if (wishs == null) return Results.BadRequest();
 
             var newWishs = new List<List<WishModel>>();
             foreach (var wish in wishs)
             {
-                Console.WriteLine(wish[0].Id);
                 var w = _wishService.GetWishsWisoutReserv(wish);
                 if (w.Count>0)
                     newWishs.Add(w);
@@ -67,6 +65,16 @@ namespace WishAPI.Controllers
             return Results.Json(_wishService.GetWishsWisoutReserv(Wish));
         }
 
+        [Route("reserv/{id}")]
+        [Authorize]
+        [HttpGet]
+        public async Task<IResult> GetReservWishsAsync(string id)
+        {
+            var wishs = await _wishRepository.GetWishsAsync();
+            var reservWish = wishs.Where(item => item.ReservUser.ToString() == id);
+            return Results.Json(reservWish);
+        }
+
         [Authorize]
         [HttpPost]
         public async Task<IResult> AddWishAsync([FromBody] WishList wishList)
@@ -97,7 +105,7 @@ namespace WishAPI.Controllers
             var wishs= new List<WishModel>();
             foreach (WishModel w in oldWishs)
             {
-                var newWish = new WishModel(newName.UserId, newName.Name, w.Present, w.Price, w.ReservUser);
+                var newWish = new WishModel(newName.UserId, newName.Name, w.Present, w.Price, w.ReservUser, w.ReservUserName);
                 wishs.Add(await _wishRepository.UpdateWishAsync(newWish));
             }
             if (wishs == null) return Results.BadRequest();
@@ -118,7 +126,7 @@ namespace WishAPI.Controllers
 
             Guid.TryParse(userId, out var Id);
             oldWish.ReservUser = Id;
-
+            oldWish.ReservUserName = await _wishService.GetUserById(userId);
             var wish = _wishRepository.UpdateWishAsync(oldWish);
 
             if (wish == null) return Results.BadRequest();
@@ -136,8 +144,9 @@ namespace WishAPI.Controllers
             var token = Request.Headers["Authorization"].ToString();
             token = token.Substring(7);
             var userId = _wishService.GetUserIdFromToken(token);
-            if(oldWish.UserId.ToString() != userId) return Results.BadRequest();
+            if(oldWish.ReservUser.ToString() != userId) return Results.BadRequest();
 
+            oldWish.ReservUser = null;
             oldWish.ReservUser = null;
 
             var wish = _wishRepository.UpdateWishAsync(oldWish);

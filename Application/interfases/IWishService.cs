@@ -9,5 +9,6 @@ namespace Application.interfases
         public string? GetUserIdFromToken(string token);
         public List<WishModel> GetWishsWisoutReserv(List<WishModel> wishs);
         public Task<List<List<WishModel>>> GetListWishsAsync();
+        public Task<string?> GetUserById(string id);
     }
 }
