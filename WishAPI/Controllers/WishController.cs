@@ -64,8 +64,25 @@ namespace WishAPI.Controllers
             }
             return Results.Json(_wishService.GetWishsWisoutReserv(Wish));
         }
+        [Route("get-wish/{id}")]
+        [Authorize]
+        [HttpGet]
+        public async Task<IResult> GetWishAsync(string id)
+        {
+            Guid.TryParse(id, out var GuidId);
+            WishModel? Wish = await _wishRepository.GetWishByIdAsync(GuidId);
+            if (Wish == null) return Results.BadRequest();
 
-        [Route("reserv/{id}")]
+            var token = Request.Headers["Authorization"].ToString();
+            token = token.Substring(7);
+            var userIdStr = _wishService.GetUserIdFromToken(token);
+            if (userIdStr == Wish.UserId.ToString())
+                return Results.Json(Wish);
+            
+            return Results.BadRequest();
+        }
+
+        [Route("reserv/{id}")]  
         [Authorize]
         [HttpGet]
         public async Task<IResult> GetReservWishsAsync(string id)
@@ -87,25 +104,30 @@ namespace WishAPI.Controllers
             return Results.Json(wish);
         }
 
-        [Route("update/wish")]
+        [Route("update/wish/{id}")]
         [Authorize]
         [HttpPut]
-        public async Task<IResult> UpdateWishAsync([FromBody] WishModel wish)
+        public async Task<IResult> UpdateWishAsync(string id, [FromBody] WishList wishList)
         {
-            var newWish = await _wishRepository.UpdateWishAsync(wish);
-            if (newWish == null) return Results.BadRequest();
-            return Results.Json(newWish);
+            Guid.TryParse(id, out var GuidId);
+            var oldWish = await _wishRepository.GetWishByIdAsync(GuidId);
+            var newWish = new WishModel(oldWish.UserId, oldWish.UserName, wishList.Present, wishList.Price, oldWish.ReservUser, oldWish.ReservUserName);
+            newWish.Id = oldWish.Id;
+            var Wish = await _wishRepository.UpdateWishAsync(newWish);
+            if (Wish == null) return Results.BadRequest();
+            return Results.Json(Wish);
         }
 
-        [Route("update/name")]
+        [Route("update/name/{id}")]
         [HttpPut]
-        public async Task<IResult> UpdateNameAsync([FromBody] CreateName newName)
+        public async Task<IResult> UpdateNameAsync(string id, [FromBody] string name)
         {
-            List<WishModel> oldWishs = await _wishRepository.GetWishByUserIdAsync(newName.UserId);
+            Guid.TryParse(id, out var Id);
+            List<WishModel> oldWishs = await _wishRepository.GetWishByUserIdAsync(Id);
             var wishs= new List<WishModel>();
             foreach (WishModel w in oldWishs)
             {
-                var newWish = new WishModel(newName.UserId, newName.Name, w.Present, w.Price, w.ReservUser, w.ReservUserName);
+                var newWish = new WishModel(w.Id, Id, name, w.Present, w.Price, w.ReservUser, w.ReservUserName);
                 wishs.Add(await _wishRepository.UpdateWishAsync(newWish));
             }
             if (wishs == null) return Results.BadRequest();

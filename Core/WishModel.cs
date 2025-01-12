@@ -20,6 +20,17 @@
             ReservUserName = reservUserName;
         }
 
+        public WishModel(Guid id, Guid userId, string userName, string present, string price, Guid? reservUser, string? reservUserName)
+        {
+            Id = id;
+            UserId = userId;
+            UserName = userName;
+            Present = present;
+            Price = price;
+            ReservUser = reservUser;
+            ReservUserName = reservUserName;
+        }
+
         public WishModel(Guid userId, string userName, string present, string price)
         {
             UserId = userId;
