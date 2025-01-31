@@ -21,16 +21,10 @@ namespace Application
 
         public async Task<WishModel> CreateNewWishAsync(string token, string present, string price)
         {
-            var userIdStr = GetUserIdFromToken(token);
-            Guid.TryParse(userIdStr, out var userId);
+            var idStr = GetUserIdFromToken(token);
+            Guid.TryParse(idStr, out var id);
 
-            var response = await _httpClient.GetAsync($"https://localhost:7001/User/id/{userId}");
-            if (!response.IsSuccessStatusCode) 
-                return null;
-
-            var user = await response.Content.ReadFromJsonAsync<UserModel>();
-
-            WishModel wish = new WishModel(user.Id, user.Name, present, price);
+            WishModel wish = new WishModel(id, present, price);
             await _wishRepository.AddWishAsync(wish);
             return wish;
         }
