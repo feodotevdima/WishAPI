@@ -10,6 +10,7 @@ namespace Presistence.DTO
         public Guid Id { get; set; }
         public Guid UserId { get; set; }
         public string? UserName { get; set; }
+        public string? Image { get; set; }
         public string Present { get; set; }
         public string Price { get; set; }
         public Guid? ReservUser { get; set; }
@@ -31,6 +32,7 @@ namespace Presistence.DTO
             {
                 var user = await response.Content.ReadFromJsonAsync<UserModel>();
                 UserName = user.Name;
+                Image = user.Image;
                 return true;
             }
             return false;

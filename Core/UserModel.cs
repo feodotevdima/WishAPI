@@ -11,12 +11,14 @@ namespace Core
         public Guid Id { get; set; }
         public string Name { get; set; }
         public string Email { get; set; }
+        public string Image { get; set; }
 
-        public UserModel(Guid id, string name, string email)
+        public UserModel(Guid id, string name, string email, string image)
         {
-            Id=id;
-            Name=name;
+            Id = id;
+            Name = name;
             Email = email;
+            Image = image;
         }
     }
 }
